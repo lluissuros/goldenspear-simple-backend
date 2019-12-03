@@ -8,6 +8,7 @@ This is a simple Node backed to provide user authentication (`login` and `signup
 
 ### How to use
 First time: `npm install` for dependencies
+
 Get it up and running: `npm start`
 
 #### Endpoints
