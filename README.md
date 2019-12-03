@@ -1,6 +1,6 @@
 # goldenspear-simple-backend
 
-This is a simple Node backed to provide user authentication (`login` and `signup` endpoints) and token-authenticated communication for the front end (with  
+This is a simple Node backend to provide user authentication (`login` and `signup` endpoints) and token-authenticated communication for the front end (with  
 [JSON web tokens](https://jwt.io/)) 
 
 ##### The corresponding front end can be found [here](https://github.com/lluissuros/goldenspear-react-contacts-app)
