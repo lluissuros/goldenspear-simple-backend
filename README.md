@@ -3,6 +3,8 @@
 This is a simple Node backed to provide user authentication (`login` and `signup` endpoints) and token-authenticated communication for the front end (with  
 [JSON web tokens](https://jwt.io/)) 
 
+##### The corresponding front end can be found [here](https://github.com/lluissuros/goldenspear-react-contacts-app)
+
 
 ### How to use
 First time: `npm install` for dependencies
