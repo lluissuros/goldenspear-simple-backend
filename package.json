@@ -11,6 +11,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "~1.18.2",
     "concurrently": "^3.6.1",
+    "config": "^3.2.4",
     "cookie-parser": "~1.4.3",
     "express": "^4.17.1",
     "express-jwt": "^5.3.1",

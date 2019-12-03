@@ -1,5 +1,5 @@
 #local database
-/data/db.json
+/data/database.json
 
 # Logs
 logs
