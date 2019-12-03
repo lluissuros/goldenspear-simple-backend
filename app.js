@@ -34,8 +34,16 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 /*========= Here we will set up an express jsonwebtoken middleware(simply required for express to properly utilize the token for requests) You MUST instantiate this with the same secret that will be sent to the client ============*/
-const jwtMW = exjwt({
-  secret: SECRET
+const jwtMWChecker = exjwt({
+  secret: SECRET,
+  getToken: function fromHeaderOrQuerystring (req) {
+    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+        return req.headers.authorization.split(' ')[1];
+    } else if (req.query && req.query.token) {
+      return req.query.token;
+    }
+    return null;
+  }
 });
 
 /*=========  create new users, return jwt if success ========= */
@@ -130,7 +138,7 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.get("/", jwtMW /* Using the express jwt MW here */, (req, res) => {
+app.get("/", jwtMWChecker /* Using the express jwt MW here */, (req, res) => {
   console.log("Web Token Checked.");
   res.send("You are authenticated"); //Sending some response when authenticated
 });
