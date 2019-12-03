@@ -138,9 +138,14 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.get("/", jwtMWChecker /* Using the express jwt MW here */, (req, res) => {
+app.get("/contacts", jwtMWChecker /* Using the express jwt MW here */, (req, res) => {
   console.log("Web Token Checked.");
-  res.send("You are authenticated"); //Sending some response when authenticated
+  const contacts = db.get("contacts").value();
+  res.json({
+    sucess: true,
+    err: null,
+    contacts
+  });
 });
 
 app.listen(PORT, function() {
