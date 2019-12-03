@@ -30,5 +30,7 @@ Get it up and running: `npm start`
 
 * The JWT are encoded with a secret key that is saved under `config/default.json`. The front-end needs to know the **same secret key**  in order to decode the data!
 
+* CORS is enabled for development to allow localhost to localhost communication
+
 * I learned many things doing this part. Actually, almost everything was quite new :)
 
