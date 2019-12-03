@@ -11,6 +11,8 @@ const FileSync = require("lowdb/adapters/FileSync");
 const contacts = require("./data/contacts");
 
 const PORT = process.env.PORT || 3001;
+const SECRET = "super secret";
+
 var app = express();
 
 /*========= Set up lowdb database ============*/
@@ -33,15 +35,10 @@ app.use(cookieParser());
 
 /*========= Here we will set up an express jsonwebtoken middleware(simply required for express to properly utilize the token for requests) You MUST instantiate this with the same secret that will be sent to the client ============*/
 const jwtMW = exjwt({
-  secret: "super secret"
+  secret: SECRET
 });
 
-const userExists = user => {
-  db.get("users")
-    .find({ username: user })
-    .value();
-};
-
+/*=========  create new users, return jwt if success ========= */
 app.post("/signup", (req, res) => {
   const { username, password } = req.body;
   
@@ -65,10 +62,14 @@ app.post("/signup", (req, res) => {
     return;
   }
 
-  const saltRounds = 10;
-  bcrypt.hash(password, saltRounds, function(err, hash) {
-    console.log("TODO check user doesnt exist before creating it");
+  bcrypt.hash(password, 10, function(err, hash) {
     const id = uuid();
+
+    const token = jwt.sign(
+        { username },
+        SECRET,
+        { expiresIn: 129600 }
+      ); // Signing the token
 
     const newUser = { id, username, password: hash };
     db.get("users")
@@ -76,30 +77,23 @@ app.post("/signup", (req, res) => {
       .write();
 
     console.log("User created: ", newUser);
-    res.json("user created!");
+    res.json({
+        sucess: true,
+        err: null,
+        token
+      });
   });
 });
 
 /* This is the route that the client will be passing the entered credentials for verification to.
  If the credentials match, then the server sends back a json response with a valid json web token for the client to use for identification. */
-app.post("/log-in", (req, res) => {
+app.post("/login", (req, res) => {
   const { username, password } = req.body;
-  console.log("User submitted: ", username, password);
+  console.log("User login submitted: ", username, password);
 
-  //   db.user
-  //     .findOne({
-  //       where: { username: username }
-  //     })
-  //     .then(user => {
+  const user = db.get("users").find({ username }).value();
 
-  console.log("TODO find user in db, return user");
-  let user = null;
-  if (username === "goldenspear") {
-    user = "testy user HARCODED";
-  }
-  // the real thing is below ----
-  console.log("User Found: ", user);
-  if (user === null) {
+  if (!user) {
     console.log("user is not registered");
     res.status(401).json({
       sucess: false,
@@ -108,19 +102,15 @@ app.post("/log-in", (req, res) => {
     });
     return;
   }
+  console.log("User Found: ", user);
 
   bcrypt.compare(password, user.password, function(err, result) {
-    result = true;
     if (result === true) {
-      console.log(
-        "TODO PAssword is not checked at the moment, this is mocked!!! "
-      );
+      console.log("password correct");
 
-      let token = jwt.sign(
-        {
-          username: user.username
-        },
-        "super secret",
+      const token = jwt.sign(
+        { username: user.username },
+        SECRET,
         { expiresIn: 129600 }
       ); // Signing the token
 
@@ -148,10 +138,6 @@ app.get("/", jwtMW /* Using the express jwt MW here */, (req, res) => {
 app.listen(PORT, function() {
   console.log("App listening on PORT " + PORT);
 });
-// db.sequelize.sync().then(() => {
-//   app.listen(PORT, function() {
-//     console.log("App listening on PORT " + PORT);
-//   });
-// });
+
 
 module.exports = app;
