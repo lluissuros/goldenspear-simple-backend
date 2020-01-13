@@ -1,6 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+const cors = require('cors')
 const usersRoute = require("./routes/user.route");
 const contactsRoute = require("./routes/contacts.route");
 
@@ -13,6 +14,9 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-type,Authorization");
   next();
 });
+
+/*=========  enable CORS for development on localhost ============*/
+app.use(cors());
 
 /*=========  parse the requests/responses coming in and out of the server ============*/
 app.use(bodyParser.urlencoded({ extended: true }));
